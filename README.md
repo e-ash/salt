@@ -1,2 +1,2 @@
-# salt
-a salty web dev tool by a salty person
+# Salt
+Salt is a hacky, lightweight developing tool intended for testing out ideas when opening up JSFiddle, JSBin, etc. seems overkill. It also adresses my frustration with these tools' lack of flexibility and scriptability. It's a new iteration of a tool I originally made in eighth grade called Sand. Since Salt is mostly a rewrite and improvement of Sand, some features (i.e. plugin loader, in-page console) are not implemented, although plugin loading code is mostly in place.
