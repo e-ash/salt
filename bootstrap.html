@@ -1,23 +1,6 @@
 
-<title>Salt</title>
-<template id="tempcomponent">
-  <div class="component">
-    <div class="controls">
-      <button class="up">^</button>
-      <div class="close-wrapper">
-        <input type="range" value="0" class="close"/>
-      </div>
-      <button class="down">v</button>
-    </div>
-    <textarea class="content"></textarea>
-  </div>
-</template>
-<h1>Salt</h1>
-<ol id="arrange"></ol>
-<button id="add">+</button><button id="make">!</button>
-
-<style>
-@import url(https://brick.a.ssl.fastly.net/Linux+Libertine:400,400i);
+<title>Salt</title><template id="tempcomponent"><div class="component"><div class="controls"><button class="up">^</button><div class="close-wrapper"><input type="range" value="0" class="close"/></div><button class="down">v</button></div><textarea class="content"></textarea></div></template><h1>Salt</h1><ol id="arrange"></ol><button id="add">+</button><button id="make">!</button><br/><textarea placeholder="digest here" id="digest"></textarea><button title="import digest" id="impt">>]</button><button title="export digest" id="expt"><]</button>
+<style>@import url(https://brick.a.ssl.fastly.net/Linux+Libertine:400,400i);
 body, body * {
   margin: 0;
   outline: none;
@@ -96,10 +79,9 @@ input[type=range]::-webkit-slider-runnable-track {
 #arrange {
   padding: 0;
   list-style-type: none;
-}
-</style>
-<script>
-window.addEventListener("beforeunload", e => event.returnValue = "\\mmm/");
+}</style>
+<script>window.addEventListener("beforeunload", e => event.returnValue = "\mmm/");
+
 const base64 = {
   padding: "=",
   charTable: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
@@ -115,10 +97,13 @@ const base64 = {
   ],
   utf8Encode(str) {
     str = encodeURI(str);
+    
     const bytes = [], length = str.length;
     let offset = 0, char;
+    
     while (offset < length) {
       char = str[offset++];
+      
       if (char !== "%") {
         bytes.push(char.charCodeAt(0));
       } else {
@@ -127,6 +112,7 @@ const base64 = {
         offset += 2;
       }
     }
+
     return bytes;
   },
   utf8Decode(bytes) {
@@ -134,6 +120,7 @@ const base64 = {
     let offset = 0;
     while (offset < length) {
       const c = bytes[offset], c2 = bytes[offset + 1], c3 = bytes[offset + 2];
+
       if (128 > c) {
         chars.push(String.fromCharCode(c));
         offset += 1;
@@ -145,6 +132,7 @@ const base64 = {
         offset += 3;
       }
     }
+
     return chars.join("");
   },
   encode(str) {
@@ -193,16 +181,18 @@ const base64 = {
     return this.utf8Decode(bytes);
   }
 };
-const debug = [];
-const addBox = () => {
+
+const addBox = s => {
   const component = document.importNode(tempcomponent.content, true).querySelector(".component");
   const up = component.querySelector(".up");
   up.addEventListener("click", () => component.previousElementSibling.before(component));
   const close = component.querySelector(".close");
+  /* put in "slide to remove" code later */
   const down = component.querySelector(".down");
   down.addEventListener("click", () => component.nextElementSibling.after(component));
+  const content = component.querySelector(".content");
+  content.value = s;
   arrange.appendChild(component);
-  debug.push(component);
 };
 const build = () => {
   const content = [];
@@ -210,6 +200,7 @@ const build = () => {
     const s = e.value;
     const header_ = s.match(/^[a-z-]+(?=:\n+)/g);
     const body = s.replace(/^[a-z-]+:\n+/g, "");
+    
     if (header_ === null) {
       content.push(`Error: the content does not contain a valid Salt header. Here is the original content:
 <pre>${s}</pre>`);
@@ -228,6 +219,26 @@ const build = () => {
 const makeProj = () => {
   window.open(build());
 };
+const imp = () => {
+  const data = JSON.parse(digest.value);
+  
+  while (arrange.firstChild) arrange.removeChild(arrange.firstChild);
+  data.contents.forEach(comp => addBox(`${comp.header}:\n${comp.body.join("\n")}`));
+};
+const exp = () => {
+  const values = [].map.call(arrange.childNodes, node => node.querySelector(".content").value);
+  const headers = values.map(s => s.match(/^[a-z-]+(?=:\n+)/g)[0]);
+  const contents = values.map(s => s.replace(/^[a-z-]+:\n+/g, ""));
+  digest.value = JSON.stringify({
+    name: "name",
+    version: [0, 0, 1],
+    contents: headers.map((header, i) => ({
+      header,
+      body: contents[i].split("\n")
+    }))
+  });
+};
+
 const plugins = [
   {
     header: "css",
@@ -250,6 +261,7 @@ const load = function(s) {
   if (!(s in load.added)) (e => (load.added[s] = false, document.head.appendChild(e).src = s, e.onload = () => load.added[s] = true))(document.createElement("script"));
 };
 load.added = {};
+
 plugins.add({
   header: "jade",
   needs: [
@@ -257,6 +269,8 @@ plugins.add({
   ],
   action: s => jade.compile(s)()
 });
-add.addEventListener("click", addBox);
+
+add.addEventListener("click", () => addBox(""));
 make.addEventListener("click", makeProj);
-</script>
+impt.addEventListener("click", imp);
+expt.addEventListener("click", exp);</script>
