@@ -11,7 +11,7 @@
         "    .controls",
         "      button.up ^",
         "      .close-wrapper",
-        "        input(type="range" value=0).close",
+        "        input(type=\"range\" value=0).close",
         "      button.down v",
         "  textarea.content",
         "h1 Salt",
