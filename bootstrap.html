@@ -1,5 +1,4 @@
-
-<title>Salt</title><template id="tempcomponent"><div class="component"><div class="controls"><button class="up">^</button><div class="close-wrapper"><input type="range" value="0" class="close"/></div><button class="down">v</button></div><textarea class="content"></textarea></div></template><h1>Salt</h1><ol id="arrange"></ol><button id="add">+</button><button id="make">!</button><br/><textarea placeholder="digest here" id="digest"></textarea><button title="import digest" id="impt">>]</button><button title="export digest" id="expt"><]</button>
+<title>Salt</title><template id="tempcomponent"><div class="component"><div class="controls"><button class="up">^</button><div class="close-wrapper"><input type="range" value="0" class="close"/></div><button class="down">v</button></div><textarea class="content"></textarea></div></template><h1>Salt</h1><ol id="arrange"></ol><br/><button id="add">+</button><button id="make">!</button><br/><textarea placeholder="digest here" id="digest"></textarea><br/><button title="import digest" id="impt">>]</button><button title="export digest" id="expt"><]</button>
 <style>@import url(https://brick.a.ssl.fastly.net/Linux+Libertine:400,400i);
 body, body * {
   margin: 0;
@@ -14,6 +13,9 @@ body * + * {
 }
 body {
   font-family: "Linux Libertine";
+}
+br {
+  clear: both;
 }
 h1 {
   font-weight: normal;
@@ -229,14 +231,10 @@ const exp = () => {
   const values = [].map.call(arrange.childNodes, node => node.querySelector(".content").value);
   const headers = values.map(s => s.match(/^[a-z-]+(?=:\n+)/g)[0]);
   const contents = values.map(s => s.replace(/^[a-z-]+:\n+/g, ""));
-  digest.value = JSON.stringify({
-    name: "name",
-    version: [0, 0, 1],
-    contents: headers.map((header, i) => ({
-      header,
-      body: contents[i].split("\n")
-    }))
-  });
+  digest.value = JSON.stringify(headers.map((header, i) => ([
+    header,
+    contents[i].split("\n")
+  ])));
 };
 
 const plugins = [
