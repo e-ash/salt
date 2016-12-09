@@ -184,8 +184,10 @@ const base64 = {
   }
 };
 
+const templ = document.getElementById("tempcomponent");
+
 const addBox = s => {
-  const component = document.importNode(tempcomponent.content, true).querySelector(".component");
+  const component = document.importNode(templ.content, true).querySelector(".component");
   const up = component.querySelector(".up");
   up.addEventListener("click", () => component.previousElementSibling.before(component));
   const close = component.querySelector(".close");
@@ -225,16 +227,16 @@ const imp = () => {
   const data = JSON.parse(digest.value);
   
   while (arrange.firstChild) arrange.removeChild(arrange.firstChild);
-  data.contents.forEach(comp => addBox(`${comp.header}:\n${comp.body.join("\n")}`));
+  data.forEach(comp => addBox(`${comp[0]}:\n${comp[1].join("\n")}`));
 };
 const exp = () => {
   const values = [].map.call(arrange.childNodes, node => node.querySelector(".content").value);
   const headers = values.map(s => s.match(/^[a-z-]+(?=:\n+)/g)[0]);
   const contents = values.map(s => s.replace(/^[a-z-]+:\n+/g, ""));
-  digest.value = JSON.stringify(headers.map((header, i) => ([
+  digest.value = JSON.stringify(headers.map((header, i) => [
     header,
     contents[i].split("\n")
-  ])));
+  ]));
 };
 
 const plugins = [
