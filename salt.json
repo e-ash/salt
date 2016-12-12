@@ -1,7 +1,7 @@
-[  
-   [  
+[
+   [
       "jade",
-      [  
+      [
          "title Salt",
          "template#tempcomponent",
          "  .component",
@@ -23,9 +23,9 @@
          "button(title=\"export digest\")#expt <]"
       ]
    ],
-   [  
+   [
       "css",
-      [  
+      [
          "@import url(https://brick.a.ssl.fastly.net/Linux+Libertine:400,400i);",
          "body, body * {",
          "  margin: 0;",
@@ -111,9 +111,9 @@
          "}"
       ]
    ],
-   [  
+   [
       "js",
-      [  
+      [
          "window.addEventListener(\"beforeunload\", e => event.returnValue = \"\\mmm/\");",
          "",
          "const base64 = {",
